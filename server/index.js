@@ -16,8 +16,7 @@ const user = require('./routes/user');
 const session = require('express-session');
 const SQLiteStore = require('connect-sqlite3')(session);
 const { flashMiddleware } = require('./flash');
-// const Db = require('./db');
-// console.log(Db.instance);
+const csp = require('helmet-csp');
 
 const app = express();
 
@@ -32,6 +31,18 @@ app.set('view options', { layout: true });
 app.use(favicon(path.join(__dirname, '..', 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(cors());
+
+
+app.use(csp({
+  // Specify directives as normal.
+  directives: {
+    defaultSrc: ["'self'"],
+    styleSrc: ["'self'", "'unsafe-inline'"],
+    scriptSrc: ["'self'"],
+    fontSrc: ["data:"]
+  }
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('secret'));
